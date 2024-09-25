@@ -1,0 +1,19 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "nodejs Nguyen Van Quan",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "nodejs",
+    "react"
+  ],
+  "author": "Nguyen Van Quan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
