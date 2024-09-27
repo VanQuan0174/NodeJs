@@ -14,29 +14,20 @@
 
 const express = require('express') // commonjs
 const path = require('path');
+const configViewEngine = require('./config/viewEngine');
 require('dotenv').config();
-// import express from 'express' // es modules
+
+const webRoutes = require('./routes/web');
 
 const app = express() // app express
 const port = process.env.PORT || 8386;// port => hardcode
 const hostname = process.env.HOST_NAME;
+
 //config tamplate engine
-app.set('views', path.join(__dirname,'views'));
-app.set('view engine', 'ejs')
+configViewEngine(app);
 
-//config statics files
-app.use(express.static(path.join(__dirname,'public')));
-
-
-// khai báo route
-app.get('/', (req, res) => {
-  res.send('Hello World 123')
-})
-
-app.get('/abc', (req, res) => {
-  // res.send('<h1>123<h1/>')
-  res.render('sample.ejs')
-})
+// khai báo routes
+app.use('/', webRoutes);
 
 app.listen(port,hostname, () => {
   console.log(`Example app listening on port ${port}`)
