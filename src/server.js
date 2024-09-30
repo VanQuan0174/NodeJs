@@ -17,6 +17,8 @@ const path = require('path');
 const configViewEngine = require('./config/viewEngine');
 require('dotenv').config();
 
+const mysql = require('mysql2');
+
 const webRoutes = require('./routes/web');
 
 const app = express() // app express
@@ -28,6 +30,26 @@ configViewEngine(app);
 
 // khai báo routes
 app.use('/', webRoutes);
+
+// test connection
+// create the connection to database
+const connection = mysql.createConnection({
+  host : 'localhost',
+  port : '3307',
+  user : 'root', //default : empty
+  password : '123456',
+  database : 'nodejs'
+});
+
+//simple query
+connection.query(
+  'SELECT * FROM Users u',
+  function (err, results, fields) {
+    console.log(">>results",results);
+    console.log(">>fields",fields);
+  }
+);
+
 
 app.listen(port,hostname, () => {
   console.log(`Example app listening on port ${port}`)
