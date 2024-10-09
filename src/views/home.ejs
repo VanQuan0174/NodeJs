@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="topnav">
+        <a class="active" href="/">Home</a>
+        <a href="/create">Create Usser</a>
+        <a href="#contact">Contact</a>
+        <a href="#about">About</a>
+    </div>
+    <table border="1px">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>ACtion</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% user.forEach((value) => { %>
+                <tr>
+                    <td><%= value.id %></td>
+                    <td><%= value.name %></td>
+                    <td><%= value.email %></td>
+                    <td>
+                        <button>Delete</button>
+                        <button>Edit</button>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>
