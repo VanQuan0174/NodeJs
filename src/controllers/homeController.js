@@ -1,14 +1,10 @@
-const connection = require('../config/database');
-
-const { getAllUser } = require('../sercives/CRUDService');
+const { getAllUser, updateUserId , deleteUser, findUser , createUser} = require('../sercives/CRUDService');
 
 const getHomepage = async (req, res) => {
     let results = await getAllUser();
     return res.render('home.ejs', {user : results});
    
 }
-
-
 const getCreateUser = (req, res) => {
     return res.render('create.ejs');
    
@@ -16,15 +12,12 @@ const getCreateUser = (req, res) => {
 const postCreateUser = async (req, res)=> {
     let email = req.body.email;
     let name = req.body.name;
-    
-    let [results, fields] = await connection.query(
-        `INSERT INTO users (email, name) VALUES (?,?)`, [email, name],
-    );
-    res.send("thêm thành công");
+    await createUser(email,name);
+    res.redirect('/'); 
 }
 const getUpdateUser = async (req, res) => {
-    const userId = req.params.id
-    let [results, fields] = await connection.query('SELECT * FROM users WHERE id = ?', [userId]);
+    const id = req.params.id
+    let results = await findUser(id);
     let user = results && results.length > 0 ? results[0] : {}; 
     return res.render('update.ejs',{user : user});
    
@@ -33,18 +26,13 @@ const postUpdateUser = async (req, res) => {
     let email = req.body.email;
     let name = req.body.name;
     let id = req.body.id;
-    
-    let [results, fields] = await connection.query(
-        `UPDATE users SET email=?, name=? WHERE id=? `, [email, name, id]
-    );
+    await updateUserId(email,name,id)
      res.redirect('/'); 
 }
 
-const deleteUser = async (req, res) => {
+const destroyUser = async (req, res) => {
     let id = req.params.id;
-    let [results, fields] = await connection.query(
-        `DELETE FROM users WHERE id=?`,[id]
-    );
+    await deleteUser(id)
      res.redirect('/'); 
 }
 
@@ -54,5 +42,5 @@ module.exports = {
     getCreateUser,
     getUpdateUser,
     postUpdateUser,
-    deleteUser
+    destroyUser
 }
