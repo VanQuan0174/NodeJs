@@ -35,12 +35,13 @@ const deleteUser = async(req, res) => {
 }
 const createUser = async (req, res) => {
     let email = req.body.email; 
-    let name = req.body.name; 
+    let name = req.body.name;
+    let file = req.body.file 
     if (!email || !name) {
         return res.status(400).json({ message: 'Email và tên là bắt buộc' });
     }
     try {
-        await userService.createUser(email, name) ; 
+        await userService.createUser(email, name, file) ; 
         return res.status(201).json({ message: 'Thêm người dùng thành công' });
     } catch (error) {
         console.error('Error creating user:', error);

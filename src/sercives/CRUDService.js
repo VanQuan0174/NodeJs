@@ -8,11 +8,11 @@ const findUser = async (id) => {
     let [results, fields] = await connection.query('SELECT * FROM users WHERE id = ?', [id]);
     return results;
 }
-const createUser = async (email, name) => {
+const createUser = async (email, name, file) => {
     let [results, fields] = await connection.query(
-        `INSERT INTO users (email, name) VALUES (?,?)`, [email, name],
+        `INSERT INTO users (email, name, file) VALUES (?, ?, ?)`, [email, name, file]
     );
-}
+};
 const deleteUser = async (id) => {
     let [results, fields] = await connection.query(
         `DELETE FROM users WHERE id=?`,[id]

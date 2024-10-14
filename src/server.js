@@ -21,6 +21,8 @@ configViewEngine(app);
 app.use('/', webRoutes); // Routes cho web
 app.use('/api', apiRoutes); // Đường dẫn cho API
 
+app.use(express.static("./public"))
+
 // Khởi động server
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
