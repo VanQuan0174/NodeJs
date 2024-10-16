@@ -1,5 +1,8 @@
 const userService = require('../../sercives/CRUDService'); 
 
+
+const jwt = require('jsonwebtoken');
+
 const getAllUser = async (req, res) => {
     try {
         const results = await userService.getAllUser(); // Gọi service để lấy người dùng
@@ -33,19 +36,22 @@ const deleteUser = async(req, res) => {
         return res.status(500).json({ message: 'Có lỗi xảy ra khi lấy dữ liệu người dùng' });
     }
 }
-const createUser = async (req, res) => {
+const createUser = async (req, res ) => {
     let email = req.body.email; 
     let name = req.body.name;
+    let password = req.body.password;
     let file = req.body.file 
-    if (!email || !name) {
-        return res.status(400).json({ message: 'Email và tên là bắt buộc' });
+    if (!email || !password ) {
+        return res.status(400).json({ message: 'Email và password là bắt buộc' });
     }
     try {
-        await userService.createUser(email, name, file) ; 
+        await userService.createUser(email, password, name, file) ; 
         return res.status(201).json({ message: 'Thêm người dùng thành công' });
     } catch (error) {
-        console.error('Error creating user:', error);
-        return  res.status(500).json({ message: 'Có lỗi xảy ra khi thêm người dùng' });
+        if (error.message === 'Email đã tồn tại') {
+            return res.status(400).json({ message: 'Email đã tồn tại.' });
+        }
+        return  res.status(500).json({ message: 'Có lỗi xảy ra khi thêm người dùng' , error});
         
     }
 }
@@ -53,9 +59,11 @@ const createUser = async (req, res) => {
 const updateUser = async (req,res) => {
     let email = req.body.email;
     let name = req.body.name;
+    let password = req.body.password;
+    let file = req.body.file;
     let id = req.params.id;
     try{
-        await userService.updateUserId(email,name,id)
+        await userService.updateUser(id, email, password, name, file)
         return res.status(200).json({message: 'sửa thành công'})
     }catch(error){
         console.error('Error creating user:', error);
@@ -63,6 +71,22 @@ const updateUser = async (req,res) => {
     }
 }
 
+const postLogin = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const { token } = await userService.loginUser(email, password);
+
+        res.status(200).json({
+            message: 'Đăng nhập thành công',
+            token: token, 
+        });
+    } catch (error) {
+        return res.status(401).json({ message: 'Đăng nhập thất bại', error: error.message });
+    }
+};
+
+
 module.exports = {
-    getAllUser,findUser,deleteUser,createUser,updateUser
+    getAllUser,findUser,deleteUser,createUser,updateUser,postLogin
 };

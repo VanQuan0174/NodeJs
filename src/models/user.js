@@ -6,21 +6,22 @@ const User = sequelize.define('User', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique : true,
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false // Không cho phép null
+        allowNull: false 
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false // Không cho phép null
+        allowNull: false 
     },
     file: {
-        type: DataTypes.STRING // Để lưu trữ tên file hoặc đường dẫn file
+        type: DataTypes.STRING 
     }
 }, {
-    tableName: 'users', // Tên bảng trong cơ sở dữ liệu
-    timestamps: false // Không tự động thêm createdAt và updatedAt
+    tableName: 'users', 
+    timestamps: false 
 });
 
 const UserModel = {
@@ -57,7 +58,12 @@ const UserModel = {
             return true;
         }
         return false; 
-    }
+    },
+
+    findOne: async (email) => {
+        return await User.findOne(email); 
+    },
+
 };
 
 module.exports = UserModel;

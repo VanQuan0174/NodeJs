@@ -33,22 +33,16 @@ const upload = multer({ storage: storage }).single('file');
 // Hàm postCreateUser sử dụng middleware upload
 const postCreateUser = (req, res) => {
     upload(req, res, async (err) => {
-
         let email = req.body.email;
         let name = req.body.name;
         let password = req.body.password;
         let file = req.file ? req.file.filename : null;
 
-        // Kiểm tra xem email và name có null không
-        if (!email || !name || !password) {
-            return res.status(400).send('Email, password, and Name are required.');
-        }
-
         try {
             await userService.createUser(email, password, name, file); 
             res.redirect('/'); 
         } catch (error) {
-            res.send('thất bại');
+            res.send('thất bại', error);
         }
     });
 };
