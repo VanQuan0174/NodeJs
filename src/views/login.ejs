@@ -10,31 +10,24 @@
 <body>
     <div class="topnav">
         <a href="/">Home</a>
-        <a class="active" href="/create">Create User</a>
-        <a href="/login">Login</a>
+        <a href="/create">Create Usser</a>
+        <a class="active" href="/login">Login</a>
     </div>
+
     <div class="form">
         <form action="/create-user" method="post" enctype="multipart/form-data"> <!-- Thêm enctype -->
             <fieldset>
-                <legend>Form add user</legend>
+                <legend>Form login</legend>
                 <div class="input-group">
                     <label for="">Email :</label>
-                    <input type="text" name="email" required> 
+                    <input type="text" name="email" required> <!-- Thêm required -->
                 </div>
                 <div class="input-group">
                     <label for="">Password :</label>
-                    <input type="text" name="password" required> 
-                </div>
-                <div class="input-group">
-                    <label for="">Name :</label>
-                    <input type="text" name="name" required> 
-                </div>
-                <div class="input-group">
-                    <label for="">Profile Picture:</label>
-                    <input type="file" name="file" required>
+                    <input type="text" name="name" required> <!-- Thêm required -->
                 </div>
                 <div>
-                    <button>Save</button>
+                    <button>login</button>
                 </div>
             </fieldset>
         </form>

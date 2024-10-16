@@ -3,35 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Update User</title>
     <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <!-- <%= JSON.stringify(user)%> -->
     <div class="topnav">
         <a class="active" href="/">List User</a>
-        <a href="/create">Create Usser</a>
+        <a href="/create">Create User</a>
     </div>
     <div class="form">
-        <form action="/update-user/<%= user.id %>" method="post">
+        <form action="/update-user/<%= user.id %>" method="post" enctype="multipart/form-data">
             <fieldset>
-                <legend>Form update user</legend>
+                <legend>Form Update User</legend>
+                
                 <div class="input-group d-none">
-                    <label for="">id :</label>
-                    <input type="text" name="id"  value="<%= user.id %>">
+                    <label for="">ID:</label>
+                    <input type="text" name="id" value="<%= user.id %>" readonly>
                 </div>
                 
                 <div class="input-group">
-                    <label for="">Email :</label>
-                    <input type="text" value="<%= user.email %>" name="email">
+                    <label for="">Email:</label>
+                    <input type="text" name="email" value="<%= user.email %>" required>
                 </div>
+                
                 <div class="input-group">
-                    <label for="">Name :</label>
-                    <input type="text" value="<%= user.name %>" name="name">
+                    <label for="">Password:</label>
+                    <input type="password"  value="<%= user.password %>" name="password" required>
                 </div>
+                
+                <div class="input-group">
+                    <label for="">Name:</label>
+                    <input type="text" name="name" value="<%= user.name %>" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="">Profile Picture:</label>
+                    <input type="file" name="file">
+                    <% if (user.file) { %>
+                        <p>Current Profile Picture: <img src="/images/<%= user.file %>" alt="Profile Picture" width="100"></p>
+                    <% } %>
+                </div>
+                
                 <div>
-                    <button>update</button>
+                    <button type="submit">Update</button>
                 </div>
             </fieldset>
         </form>

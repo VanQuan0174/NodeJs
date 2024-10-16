@@ -1,16 +1,22 @@
-const { getAllUser, updateUserId , deleteUser, findUser , createUser} = require('../sercives/CRUDService');
+const userService = require('../sercives/CRUDService');
 const multer = require('multer');
 const path = require('path');
 
+// Lấy trang chủ
 const getHomepage = async (req, res) => {
-    let results = await getAllUser();
-    return res.render('home.ejs', {user : results});
-   
+    try {
+        let results = await userService.getAllUser();
+        return res.render('home.ejs', { user: results });
+    } catch (error) {
+        return res.send('thất bại lỗi');
+    }
 }
+
+// Lấy trang tạo người dùng
 const getCreateUser = (req, res) => {
     return res.render('create.ejs');
-   
 }
+
 // Cấu hình storage cho multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -27,57 +33,81 @@ const upload = multer({ storage: storage }).single('file');
 // Hàm postCreateUser sử dụng middleware upload
 const postCreateUser = (req, res) => {
     upload(req, res, async (err) => {
-        // Kiểm tra lỗi upload
-        if (err) {
-            console.error('Error uploading file:', err);
-            return res.status(500).send('Error uploading file.');
-        }
 
-        // Lấy email, name từ body và file từ req.file
         let email = req.body.email;
         let name = req.body.name;
+        let password = req.body.password;
         let file = req.file ? req.file.filename : null;
 
         // Kiểm tra xem email và name có null không
-        if (!email || !name) {
-            return res.status(400).send('Email and Name are required.');
+        if (!email || !name || !password) {
+            return res.status(400).send('Email, password, and Name are required.');
         }
 
         try {
-            await createUser(email, name, file); // Gọi hàm tạo người dùng
-            res.redirect('/'); // Chuyển hướng về trang chủ
+            await userService.createUser(email, password, name, file); 
+            res.redirect('/'); 
         } catch (error) {
-            console.error('Error creating user:', error);
-            res.status(500).send('Internal Server Error');
+            res.send('thất bại');
         }
     });
 };
+
+// Lấy trang cập nhật người dùng
 const getUpdateUser = async (req, res) => {
-    const id = req.params.id
-    let results = await findUser(id);
-    let user = results && results.length > 0 ? results[0] : {}; 
-    return res.render('update.ejs',{user : user});
-   
-}
-const postUpdateUser = async (req, res) => {
-    let email = req.body.email;
-    let name = req.body.name;
-    let id = req.body.id;
-    await updateUserId(email,name,id)
-     res.redirect('/'); 
+    const id = req.params.id;
+    try {
+        let results = await userService.findUser(id);
+        let user = results ? results : {}; 
+        return res.render('update.ejs', { user: user });
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        return res.send('thất bại');
+    }
 }
 
+const postUpdateUser = (req, res) => {
+    upload(req, res, async (err) => {
+
+        let email = req.body.email;
+        let name = req.body.name;
+        let password = req.body.password;
+        let id = req.body.id;
+        let file = req.file ? req.file.filename : null; 
+
+        try {
+            await userService.updateUser(id, email, password, name, file); 
+            res.redirect('/'); 
+        } catch (error) {
+            res.send('thất bại');
+        }
+    });
+};
+
+// Xóa người dùng
 const destroyUser = async (req, res) => {
     let id = req.params.id;
-    await deleteUser(id)
-     res.redirect('/'); 
+
+    try {
+        await userService.deleteUser(id);
+        res.redirect('/'); 
+    } catch (error) {
+        res.send('thất bại');
+    }
+};
+
+// Lấy trang đăng nhập
+const getLogin = async (req, res) => {
+    return res.render('login.ejs');
 }
 
+// Xuất các hàm
 module.exports = {
     getHomepage,
-    postCreateUser,
     getCreateUser,
+    postCreateUser,
     getUpdateUser,
     postUpdateUser,
-    destroyUser
+    destroyUser,
+    getLogin
 }
