@@ -1,11 +1,9 @@
 const userService = require('../../sercives/CRUDService'); 
-
-
 const jwt = require('jsonwebtoken');
 
 const getAllUser = async (req, res) => {
     try {
-        const results = await userService.getAllUser(); // Gọi service để lấy người dùng
+        const results = await userService.getAllUser(); 
         return res.status(200).json(results); // Trả về kết quả dưới dạng JSON
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -72,11 +70,10 @@ const updateUser = async (req,res) => {
 }
 
 const postLogin = async (req, res) => {
-    const { email, password } = req.body;
-
+    let email = req.body.email;
+    let password = req.body.password;
     try {
         const { token } = await userService.loginUser(email, password);
-
         res.status(200).json({
             message: 'Đăng nhập thành công',
             token: token, 
@@ -84,7 +81,7 @@ const postLogin = async (req, res) => {
     } catch (error) {
         return res.status(401).json({ message: 'Đăng nhập thất bại', error: error.message });
     }
-};
+}; 
 
 
 module.exports = {

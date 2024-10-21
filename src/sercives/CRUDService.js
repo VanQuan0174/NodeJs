@@ -1,5 +1,4 @@
 const User = require('../models/user'); 
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -30,6 +29,11 @@ const createUser = async (email, password, name, file) => {
         if (checkEmail) {
             throw new Error('Email đã tồn tại');
         }
+        if (password) {
+            const saltRounds = 10; 
+            password = await bcrypt.hash(password, saltRounds); 
+        }
+
         return await User.create(email, password, name, file); 
     } catch (error) {
         console.error('Error creating user:', error);
@@ -62,23 +66,23 @@ const loginUser = async (email, password) => {
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
-            throw new Error('Người dùng không tồn tại , email không chính xác');
+            throw new Error('Người dùng không tồn tại, email không chính xác');
         }
+        console.log("Mật khẩu người dùng nhập vào:", password);
 
-        if (user.password !== password) {
-            throw new Error('Mật khẩu không chính xác');
-        }
         const token = jwt.sign(
             { id: user.id, email: user.email }, // Payload của token
             process.env.JWT_SECRET, 
-            { expiresIn: '1h' } 
+            { expiresIn: '1h' } // Token hết hạn sau 1 giờ
         );
-        return {token};
+
+        return { token };
+
     } catch (error) {
-        throw error;
+        console.error('Error logging in:', error);
+        throw error; // Ném lỗi để controller xử lý
     }
 };
-
 
 module.exports = {
     getAllUser,

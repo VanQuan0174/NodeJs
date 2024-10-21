@@ -1,7 +1,7 @@
 const userService = require('../sercives/CRUDService');
 const multer = require('multer');
 const path = require('path');
-
+const bcrypt = require('bcryptjs');
 // Lấy trang chủ
 const getHomepage = async (req, res) => {
     try {
@@ -30,19 +30,22 @@ const storage = multer.diskStorage({
 // Tạo middleware upload
 const upload = multer({ storage: storage }).single('file');
 
-// Hàm postCreateUser sử dụng middleware upload
 const postCreateUser = (req, res) => {
     upload(req, res, async (err) => {
+        if (err) {
+            return res.status(500).send('Lỗi khi upload file');
+        }
+
         let email = req.body.email;
         let name = req.body.name;
         let password = req.body.password;
         let file = req.file ? req.file.filename : null;
 
         try {
-            await userService.createUser(email, password, name, file); 
+            await userService.createUser(email, password, name, file);
             res.redirect('/'); 
         } catch (error) {
-            res.send('thất bại', error);
+            res.send(`Thất bại: ${error.message}`);
         }
     });
 };
